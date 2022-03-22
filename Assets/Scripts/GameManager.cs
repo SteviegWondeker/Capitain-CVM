@@ -73,30 +73,44 @@ public class GameManager : MonoBehaviour
         {
             //DataManipulator manipulator = new DataManipulator();
             stream.Write(/*manipulator.Encrypt(*/PlayerDataJson.WriteJson(data)/*)*/);
-            Debug.Log(Path.Combine(Application.persistentDataPath, "savedata_encrypt.json"));
         }
         yield return new WaitForEndOfFrame();
     }
 
     private void LoadPlayerData()
     {
-        string path = Path.Combine(Application.persistentDataPath, "savedata_encrypt.json");
-        if (File.Exists(path))
+        bool debug = false;
+        if (!debug)
         {
-            using (StreamReader stream = new StreamReader(path,
-            System.Text.Encoding.UTF8))
+            string path = Path.Combine(Application.persistentDataPath, "savedata_encrypt.json");
+            if (File.Exists(path))
             {
-                /*DataManipulator manipulator = new DataManipulator();*/
-                this._playerData = PlayerDataJson.ReadJson(/*manipulator.Decrypt(*/stream.ReadToEnd())/*)*/;
+                using (StreamReader stream = new StreamReader(path,
+                System.Text.Encoding.UTF8))
+                {
+                    /*DataManipulator manipulator = new DataManipulator();*/
+                    this._playerData = PlayerDataJson.ReadJson(/*manipulator.Decrypt(*/stream.ReadToEnd())/*)*/;
+                }
+                //DataManipulator manipulator = new DataManipulator();
+                //this._playerData = manipulator.Decrypt(path);
             }
-            //DataManipulator manipulator = new DataManipulator();
-            //this._playerData = manipulator.Decrypt(path);
+            else
+            {
+                this._playerData = new PlayerData(4, 2);
+                SaveData();
+            }
         }
         else
         {
             this._playerData = new PlayerData(4, 2);
             SaveData();
         }
+    }
+
+    public void ResetPlayerData()
+    {
+        this._playerData = new PlayerData(4, 2);
+        SaveData();
     }
 
     private void Update()
@@ -128,7 +142,7 @@ public class GameManager : MonoBehaviour
     public void ChangerScene(string nomScene)
     {
         _audioManager.StopAudio(0.3f);
-        GameObject.Find("Fondu").SetActive(true);
+        //GameObject.Find("Fondu").SetActive(true);
         SceneManager.LoadScene(nomScene);
     }
 

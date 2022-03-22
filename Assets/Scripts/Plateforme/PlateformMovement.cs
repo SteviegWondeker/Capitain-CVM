@@ -8,7 +8,7 @@ public class PlateformMovement : MonoBehaviour
     /// Vitesse de l'objet en patrouille
     /// </summary>
     [SerializeField]
-    private float _vitesse = 3f;
+    private float _vitesse = 7f;
     /// <summary>
     /// Liste de GO représentant les points à atteindre
     /// </summary>
@@ -66,12 +66,12 @@ public class PlateformMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Collider2D[] _hitColliders = Physics2D.OverlapBoxAll(this.transform.position, this.transform.localScale * 3.8f, 0);
+        Collider2D[] _hitColliders = Physics2D.OverlapBoxAll(this.transform.position, this.transform.localScale * 1.2f, 0);
         Transform playerTrouve = null;
         for (int i = 0; i < _hitColliders.Length; i++)
             if (_hitColliders[i].CompareTag("Player"))
             {
-                playerTrouve = _hitColliders[i].gameObject.transform; Debug.Log("Player");
+                playerTrouve = _hitColliders[i].gameObject.transform;
             }
 
         _playerTransform = playerTrouve;

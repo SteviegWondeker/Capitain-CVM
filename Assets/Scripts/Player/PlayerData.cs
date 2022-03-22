@@ -46,6 +46,10 @@ public class PlayerData
     /// </summary>
     private List<string> _chestOpenList;
     /// <summary>
+    /// Liste des niveaux précédemment complétés
+    /// </summary>
+    private List<int> _lvlCompletedList;
+    /// <summary>
     /// Représente le maximum d'énergie du personnage
     /// </summary>
     public const int MAX_ENERGIE = 4;
@@ -62,12 +66,13 @@ public class PlayerData
     /// <summary>
     /// Permet d'identifier les actions à réaliser lors d'un gameover
     /// </summary>
-    public System.Action Gameover;
+    //public System.Action Gameover;
 
     public int Energie { get { return this._energie; } }
     public int Vie { get { return this._vie; } }
     public int Score { get { return this._score; } }
     public string[] ListeCoffreOuvert { get { return this._chestOpenList.ToArray(); } }
+    public int[] ListeNiveauxCompletes { get { return this._lvlCompletedList.ToArray(); } }
 
     public PlayerData()
     {
@@ -79,14 +84,18 @@ public class PlayerData
         this._volumeEffet = 0;
         this.UIPerteEnergie = null;
         this.UIPerteVie = null;
-        this.Gameover = null;
         this._chestOpenList = new List<string>();
+        this._lvlCompletedList = new List<int>();
+        for (int i = 0; i < 3; ++i)
+        {
+            this._lvlCompletedList.Add(0);
+        }
     }
 
     public PlayerData(int vie = 1, int energie = 2, int score = 0,
         float volumeGeneral = 0, float volumeMusique = 0, float volumeEffet = 0,
         System.Action uiPerteEnergie = null, System.Action uiPerteVie = null,
-        System.Action gameOver = null, List<string> ChestList = null)
+        List<int> lvlList = null, List<string> ChestList = null)
     {
         this._vie = vie;
         this._energie = energie;
@@ -96,10 +105,19 @@ public class PlayerData
         this._volumeEffet = volumeEffet;
         this.UIPerteEnergie += uiPerteEnergie;
         this.UIPerteVie += uiPerteVie;
-        this.Gameover += gameOver;
         this._chestOpenList = new List<string>();
         if (ChestList != null)
             this._chestOpenList = ChestList;
+        this._lvlCompletedList = new List<int>();
+        if (lvlList != null)
+            this._lvlCompletedList = lvlList;
+        else
+        {
+            for (int i = 0; i < 3; ++i)
+            {
+                this._lvlCompletedList.Add(0);
+            }
+        }
     }
 
     /// <summary>
@@ -185,5 +203,16 @@ public class PlayerData
     public bool AvoirOuvertureCoffre(string nom)
     {
         return this._chestOpenList.Contains(nom);
+    }
+
+    public void ClearedLevel(int level)
+    {
+        this._lvlCompletedList[level] = 1;
+    }
+
+    private void Gameover()
+    {
+        GameManager.Instance.ResetPlayerData();
+        GameManager.Instance.ChangerScene("MainMenu");
     }
 }

@@ -25,8 +25,13 @@ public class CoeurUIManager : MonoBehaviour
     [SerializeField]
     private Image[] _barreEnergie;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
+    {
+
+    }
+
+        // Start is called before the first frame update
+        void Start()
     {
         ModifierEnergie();
         ModifierVie();

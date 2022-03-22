@@ -18,6 +18,7 @@ public class ChestInteraction : BaseInteraction
     /// </summary>
     [SerializeField]
     private bool _estOuvert = false;
+    public bool EstOuvert { get { return _estOuvert; } set { _estOuvert = value; } }
 
     /// <summary>
     /// Sprite à ouvrir quand le coffre est ouvert
@@ -29,13 +30,11 @@ public class ChestInteraction : BaseInteraction
     /// Nom du coffre utiliser dans le fichier de sauvegarde
     /// Le nom est autogénéré dans la méthode Start
     /// </summary>
+    [SerializeField]
     private string _name;
 
     private void Start()
     {
-        _name = SceneManager.GetActiveScene().name.Replace(' ', '_')
-            + $"__{(int)this.transform.position.x}_{(int)this.transform.position.y}";
-
         this._estOuvert = GameManager.Instance.PlayerData.AvoirOuvertureCoffre(_name);
 
         if (_estOuvert)

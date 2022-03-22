@@ -8,6 +8,8 @@ TagManager:
   - Ennemy
   - Plateform
   - Tilemap Water
+  - Projectile
+  - CanvasUI
   layers:
   - Default
   - TransparentFX

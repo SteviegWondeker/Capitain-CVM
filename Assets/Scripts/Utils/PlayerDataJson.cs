@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 /// <summary>
 /// Offre un moteur de lecture/écriture du JSON
 /// pour l'objet <code>PlayerData</code>
@@ -33,9 +34,20 @@ public static class PlayerDataJson
                     json += ",";
                 json += newline;
             }
-            json += tab + "]" + newline;
+            json += tab + "]," + newline;
         }
-        else json += "]" + newline;
+        else json += "]," + newline;
+        json += tab + "\"lvlCompletedList\":[";
+        json += newline;
+        for (int i = 0; i < 3; i++)
+        {
+            int lvlData = data.ListeNiveauxCompletes[i];
+            json += tab + tab + "\"" + lvlData + "\"";
+            if (i + 1 < 3)
+                json += ",";
+            json += newline;
+        }
+        json += tab + "]" + newline;
         json += "}";
         return json;
     }
@@ -61,6 +73,7 @@ public static class PlayerDataJson
         int vie = 0, energie = 0, score = 0;
         float vlmGeneral = 0, vlmMusique = 0, vlmEffet = 0;
         List<string> chests = new List<string>();
+        List<int> lvls = new List<int>();
         string[] lignes = json.Split('\n');
         
         for(int i = 1; i < lignes.Length || lignes[i] != "}"; i++)
@@ -82,6 +95,16 @@ public static class PlayerDataJson
                 case "\"score\"":
                     score = int.Parse(parametre[1].Replace(",", string.Empty));
                     break;
+                case "\"lvlCompletedList\"":
+                    if (parametre[1] != "[")
+                        throw new JSONFormatExpcetion();
+                    while (lignes[++i] != "]")
+                    {
+                        lvls.Add(int.Parse(lignes[i]
+                            .Replace(",", string.Empty)
+                            .Replace("\"", string.Empty)));
+                    }
+                    break;
                 case "\"volumeGeneral\"":
                     vlmGeneral = float.Parse(parametre[1].Replace(",", string.Empty).Replace('.', ','));
                     break;
@@ -92,11 +115,11 @@ public static class PlayerDataJson
                     vlmEffet = float.Parse(parametre[1].Replace(",", string.Empty).Replace('.', ','));
                     break;
                 case "\"chestOpenList\"":
-                    if (parametre[1] == "[]")
+                    if (parametre[1] == "[],")
                         break;
                     else if (parametre[1] != "[")
                         throw new JSONFormatExpcetion();
-                    while(lignes[++i] != "]")
+                    while(lignes[++i] != "],")
                     {
                         chests.Add(lignes[i]
                             .Replace(",", string.Empty)
@@ -106,7 +129,7 @@ public static class PlayerDataJson
             }
         }
 
-        return new PlayerData(vie, energie, score, vlmGeneral, vlmMusique, vlmEffet, ChestList: chests);
+        return new PlayerData(vie, energie, score, vlmGeneral, vlmMusique, vlmEffet, lvlList: lvls, ChestList: chests);
     }
 }
 

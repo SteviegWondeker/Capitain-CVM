@@ -13,7 +13,7 @@ public class EchelleInteraction : BaseInteraction
     {
 
         // Placer le code pour l'action ici
-        Debug.Log("Monter à l'échelle");
+        //Debug.Log("Monter à l'échelle");
 
         PlayerMouvement pm = GameObject.FindGameObjectWithTag("Player")
             .GetComponent<PlayerMouvement>();
@@ -33,7 +33,7 @@ public class EchelleInteraction : BaseInteraction
 
     public void QuitterEchelle()
     {
-        Debug.Log("Quitte l'échelle");
+        //Debug.Log("Quitte l'échelle");
 
         PlayerMouvement pm = GameObject.FindGameObjectWithTag("Player")
             .GetComponent<PlayerMouvement>();

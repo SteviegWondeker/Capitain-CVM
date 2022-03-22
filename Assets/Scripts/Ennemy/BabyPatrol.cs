@@ -31,6 +31,10 @@ public class BabyPatrol : MonoBehaviour
     /// Référence vers le sprite Renderer
     /// </summary>
     private SpriteRenderer _sr;
+    /// <summary>
+    /// Indique la direction du bébé
+    /// </summary>
+    private int _direction;
 
     // Start is called before the first frame update
     void Start()
@@ -38,6 +42,12 @@ public class BabyPatrol : MonoBehaviour
         _sr = this.GetComponent<SpriteRenderer>();
         _indexPoint = 0;
         _cible = _points[_indexPoint];
+        /*BabyBehaviour bb = GetComponent<BabyBehaviour>();
+        this._direction = bb.getDirection();
+        if (this._direction == 1)
+            _sr.flipX = false;
+        else
+            _sr.flipX = true;*/
     }
 
     // Update is called once per frame
@@ -46,8 +56,8 @@ public class BabyPatrol : MonoBehaviour
         Vector3 direction = _cible.position - this.transform.position;
         this.transform.Translate(direction.normalized * _vitesse * Time.deltaTime, Space.World);
 
-        if (direction.y < 0 && !_sr.flipX) _sr.flipX = true;
-        else if (direction.y > 0 && _sr.flipX) _sr.flipX = false;
+        if (direction.y < 0 && !_sr.flipX) _sr.flipX = !_sr.flipX;
+        else if (direction.y > 0 && _sr.flipX) _sr.flipX = !_sr.flipX;
 
         if (Vector3.Distance(this.transform.position, _cible.position) < _distanceSeuil)
         {

@@ -9,12 +9,12 @@ public class BabyBehaviour : MonoBehaviour
     /// Point de vie du personnage
     /// </summary>
     [SerializeField]
-    private int _pv = 2;
+    private int _pv = 1;
     /// <summary>
     /// Angle de tolérange pour le calcul du saut sur la tête
     /// </summary>
     [SerializeField]
-    private float _toleranceAngle = 1.5f;
+    private GameObject _projectile;
     /// <summary>
     /// Décrit la durée de l'invulnaribilité
     /// </summary>
@@ -32,6 +32,14 @@ public class BabyBehaviour : MonoBehaviour
     /// </summary>
     private float _tempsDebutInvulnerabilite;
     /// <summary>
+    /// Représente la durée entre deux lancers de projectile
+    /// </summary>
+    private float _deltaTimeProjectile = 2f;
+    /// <summary>
+    /// Représente le temps où le dernier projectile a été lancé
+    /// </summary>
+    private float _timeDernierProjectile;
+    /// <summary>
     /// Nombre de points octroyer lors de la destruction
     /// </summary>
     [SerializeField]
@@ -40,10 +48,16 @@ public class BabyBehaviour : MonoBehaviour
     /// Défini si l'objet est en cours de destruction
     /// </summary>
     private bool _destructionEnCours = false;
+    /// <summary>
+    /// Indique le sens du bébé / la direction du projectile
+    /// </summary>
+    [SerializeField]
+    private int _direction = 1;
 
     private void Start()
     {
         _animator = this.gameObject.GetComponent<Animator>();
+        _timeDernierProjectile = Time.fixedTime;
     }
 
     private void Update()
@@ -53,13 +67,19 @@ public class BabyBehaviour : MonoBehaviour
             _animator.SetTrigger("Destruction");
             GameManager.Instance.PlayerData.IncrScore(this._pointDestruction);
             this.gameObject.GetComponent<BoxCollider2D>().enabled = false;
-            this.gameObject.GetComponent<EnnemyPatrol>().enabled = false;
+            this.gameObject.GetComponent<BabyPatrol>().enabled = false;
             GameObject.Destroy(this.transform.parent.gameObject, 0.5f);
             this._destructionEnCours = true;
         }
 
         if (Time.fixedTime > _tempsDebutInvulnerabilite + DelaisInvulnerabilite)
             _invulnerable = false;
+
+        if (Time.fixedTime > _timeDernierProjectile + _deltaTimeProjectile)
+        {
+            this.sendProjectile();
+            _timeDernierProjectile = Time.fixedTime;
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -84,5 +104,18 @@ public class BabyBehaviour : MonoBehaviour
                 _invulnerable = true;
             }
         }
+    }
+
+    public void sendProjectile()
+    {
+        //Debug.Log("Projectile shot by baby!");
+        Vector3 pos = this.transform.position;
+        GameObject p = Instantiate(_projectile, this.transform.position, Quaternion.identity);
+        p.GetComponent<ProjectileBehaviour>().setDirection(this._direction);
+    }
+
+    public int getDirection()
+    {
+        return this._direction;
     }
 }
